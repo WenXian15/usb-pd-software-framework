@@ -16,119 +16,124 @@
 #define VDM_TYPE	0
 #define VENDOR_DATA	0x5678				
 
-void fillCustomData(UINT32 *u32VDEMDataBuf)
-{
-    /* VDM Header is 32-bits, therefore 4 bytes are reserved for the header */
-    for (UINT16 i = SET_TO_ONE; i < MAX_VDEM_DATA_SIZE; i++)
-    {
-        u32VDEMDataBuf[i] = 0xAABBCCDD;
-    }
-}
-
-    // Example: Custom Vendor Defined Extended Message (VDEM) Chunked State Machine
 void PE_RunVDEMStateMachine(UINT8 u8PortNum)
 {
-    /* VDM Data Object Array */
-    UINT32 u32aVDMDataObj[PRL_MAX_DATA_OBJ_COUNT] = {SET_TO_ZERO};
+	/* VDM Data Object Array */
+    	UINT32 u32aVDMDataObj[PRL_MAX_DATA_OBJ_COUNT] = {SET_TO_ZERO};
 	
+    	/* VDM Data Object Count */
+    	UINT8 u8VDOCnt = SET_TO_ZERO;	// Set to 6 to mimic fwud
 
-    /* VDM Data Object Count */
-    UINT8 u8VDOCnt = SET_TO_ZERO;	// Set to 6 to mimic fwud
+    	// Transmit Header and Data Pointer
+    	// UINT32 u32TransmitHeader = SET_TO_ZERO;
+	UINT16 u16Message_Header = SET_TO_ZERO;
+	UINT16 u16Extended_Header = SET_TO_ZERO;
+	UINT32 pu32Msg_Header = SET_TO_ZERO;
 
-    // Transmit Header and Data Pointer
-    UINT32 u32TransmitHeader = SET_TO_ZERO;
+    	/* Transmit Data Object */
+    	UINT32 u32pTransmitDataObj[MAX_VDEM_DATA_SIZE];
+    	// UINT32 *u32pTransmitDataObj = SET_TO_ZERO;
 
-    /* Transmit Data Object */
-    // UINT32 u32pTransmitDataObj[MAX_VDEM_DATA_SIZE];
-    UINT32 *u32pTransmitDataObj = SET_TO_ZERO;
-
-    /* Callback function? */
-    // Transmit Call Back Set to 
-    PRLTxCallback pfnTransmitCB = PE_StateChange_TransmitCB;
+    	/* Callback function? */
+    	/* Definiation of PE_StateChange_TransmitCB can be found at line 2462 in policy_engine.c */
+	/* Need to find the relationship between PE_StateChange_TransmitCB and PRL_TxOriginalCBfromCH (UINT8 u8PortNum, UINT8 u8TxStateforCB) in line 1513 protocol_layer.c */
+	/* Inside the Chunk State Machine there is PRL_TCHChunkSMStateChange_TCHCB */
+    	PRLTxCallback pfnTransmitCB = PE_StateChange_TransmitCB;
     
-    /* Transmit Timer ID for Tx State */
-    UINT32 u32TransmitTmrIDTxSt = 0;
+    	/* Transmit Timer ID for Tx State */
+    	UINT32 u32TransmitTmrIDTxSt = 0;
     
-    /* Transmit flag */
-    UINT8 u8IsTransmit = FALSE;
+    	/* Transmit flag */
+    	UINT8 u8IsTransmit = FALSE;
 
-    ePolicyState eTxDoneSt;
-    ePolicySubState eTxDoneSS;
+    	ePolicyState eTxDoneSt;
+    	ePolicySubState eTxDoneSS;
 
-    if (PD_ROLE_SOURCE == DPM_GET_CURRENT_POWER_ROLE(u8PortNum))
-    {
-        eTxDoneSt = ePE_SRC_READY;
-        eTxDoneSS = ePE_SRC_READY_END_AMS_SS;
-    }
-    else
-    {
-        eTxDoneSt = ePE_SNK_READY;
-        eTxDoneSS = ePE_SNK_READY_END_AMS_SS;
-    } 
+    	if (PD_ROLE_SOURCE == DPM_GET_CURRENT_POWER_ROLE(u8PortNum))
+    	{
+        	eTxDoneSt = ePE_SRC_READY;
+		/*  Goto DPM_InitiateInternalEvts (u0PortNum) to proceed with remaining internal events */
+        	eTxDoneSS = ePE_SRC_READY_END_AMS_SS;
+    	}
+    	else
+    	{
+        	eTxDoneSt = ePE_SNK_READY;
+        	eTxDoneSS = ePE_SNK_READY_END_AMS_SS;
+    	} 
 
-    switch (gasPolicyEngine[u8PortNum].ePEState)
-    {
-      case ePE_VDEM_INITIATE_VDEM:
-		    switch (gasPolicyEngine[u8PortNum].ePESubState)
-		    {
-			    /* PE enter this sub-state when sending a VDEM request initiated by application */
-			    case ePE_VDEM_INITIATE_VDEM_ENTRY_SS:
-			      {
-				      DEBUG_PRINT_PORT_STR (PSF_PE_LAYER_DEBUG_MSG,u8PortNum,"PE_VDEM_INITIATE_VDEM_ENTRY_SS\r\n");
+    	switch (gasPolicyEngine[u8PortNum].ePEState)
+    	{
+      	case ePE_VDEM_INITIATE_VDEM:
+		switch (gasPolicyEngine[u8PortNum].ePESubState)
+		{
+			/* PE enter this sub-state when sending a VDEM request initiated by application */
+			case ePE_VDEM_INITIATE_VDEM_ENTRY_SS:
+			{
+				DEBUG_PRINT_PORT_STR (PSF_PE_LAYER_DEBUG_MSG,u8PortNum,"PE_VDEM_INITIATE_VDEM_ENTRY_SS\r\n");
 
-              /* Form VDM Header or use CFG_FORM_VDM_HEADER(svid,vdmType,svdmVersion,objPos,cmdType,cmd) */
-				      u32aVDMDataObj[INDEX_0] = ((UINT32) (VID & VID_MASK) << VID_POS) | 
-							                          ((UINT32) (VDM_TYPE & VDM_TYPE_POS) << VDM_TYPE_POS) | 
-							                          ((UINT32) (VENDOR_DATA & VENDOR_USE_MASK) << VENDOR_USE_POS);
+              			/* Form VDM Header or use CFG_FORM_VDM_HEADER(svid,vdmType,svdmVersion,objPos,cmdType,cmd) */
+				u32aVDMDataObj[INDEX_0] = ((UINT32) (VID & VID_MASK) << VID_POS) | ((UINT32) (VDM_TYPE & VDM_TYPE_POS) << VDM_TYPE_POS) | ((UINT32) (VENDOR_DATA & VENDOR_USE_MASK) << VENDOR_USE_POS);
 
-				      // u32aVDMDataObj[INDEX_0] = gasCfgStatusData.sVDMPerPortData[u8PortNum].u32VDMHeader;
-				      u32pTransmitDataObj = u32aVDMDataObj;
+				// u32aVDMDataObj[INDEX_0] = gasCfgStatusData.sVDMPerPortData[u8PortNum].u32VDMHeader;
+				u32pTransmitDataObj = u32aVDMDataObj;
 				
-				      /* Refer pg 116 */
-				      /* PE_EXT_VDEM */
-				      /* Number of Data Objects indicate the number of 32-bit Data Objects that follow the Message Header~ */
-				      /* ~ When both the Extended bit and chunked bit are set to one, the Number of Data Objects field shall indicate the number of Data Objects in the Message
-				      /* Object Count is incremented by 1 to include VDM Header.  Extended Message Header need to consider? */
-				      /* PE_EXTENDED_MSG */
-				      // u32TransmitHeader = PRL_FormSOPTypeMsgHeader (u8PortNum, (UINT8)PE_DATA_VENDOR_DEFINED, (u8VDOCnt + BYTE_LEN_1), PE_EXTENDED_MSG);
+				/* Refer pg 116 */
+				/* Number of Data Objects indicate the number of 32-bit Data Objects that follow the Message Header~ */
+				/* ~ When both the Extended bit and chunked bit are set to one, the Number of Data Objects field shall indicate the number of Data Objects in the Message
+				/* Object Count is incremented by 1 to include VDM Header.  Extended Message Header need to consider? */
+				/* PE_EXTENDED_MSG */
+				// u32TransmitHeader = PRL_FormSOPTypeMsgHeader (u8PortNum, (UINT8)PE_DATA_VENDOR_DEFINED, (u8VDOCnt + BYTE_LEN_1), PE_EXTENDED_MSG);
 
-				      /* Refer to policy_engine_fwup.c */
+				/* Refer to policy_engine_fwup.c */
         			u16Message_Header = PRL_FormSOPTypeMsgHeader (u8PortNum, PE_EXT_FW_UPDATE_RESPONSE, 7, PE_EXTENDED_MSG);
-				      u16Extended_Header = (1u << PRL_EXTMSG_CHUNKED_BIT_POS) | (PRL_EXTMSG_DATA_FIELD_MASK & gsPdfuInfo.u16PDFUResponseLength);
+				u16Extended_Header = (1u << PRL_EXTMSG_CHUNKED_BIT_POS) | (PRL_EXTMSG_DATA_FIELD_MASK & gsPdfuInfo.u16PDFUResponseLength);
         			pu32Msg_Header = PRL_FORM_COMBINED_MSG_HEADER(u16Extended_Header, u16Message_Header);
 
                 
-              /* void PE_StateChange_TransmitCB (UINT8 u8PortNum, UINT8 u8TXDoneState, UINT8 u8TxDoneSubState, UINT8 u8TxFailedState, UINT8 u8TxFailedSubState) */
-              /* if gasPRL[u8PortNum].u8TxStateISR == PRL_TX_DONE_ST, set gasPolicyEngine[u8PortNum].ePEState = (ePolicyState) u8TXDoneState */
-              /*  To review hw to handle this for chunked messages */
-              // u32TransmitTmrIDTxSt = PRL_BUILD_PKD_TXST_U32( ePE_VDEM_INITIATE_VDEM, ePE_VDEM_INITIATE_VDEM_MSG_DONE_SS, eTxDoneSt, eTxDoneSS);
+              			/* void PE_StateChange_TransmitCB (UINT8 u8PortNum, UINT8 u8TXDoneState, UINT8 u8TxDoneSubState, UINT8 u8TxFailedState, UINT8 u8TxFailedSubState) */
+              			/* if gasPRL[u8PortNum].u8TxStateISR == PRL_TX_DONE_ST, set gasPolicyEngine[u8PortNum].ePEState = (ePolicyState) u8TXDoneState */
+              			/*  To review hw to handle this for chunked messages */
+              			u32TransmitTmrIDTxSt = PRL_BUILD_PKD_TXST_U32( ePE_VDEM_INITIATE_VDEM, ePE_VDEM_INITIATE_VDEM_MSG_DONE_SS, eTxDoneSt, eTxDoneSS);
 
-				      u8IsTransmit = TRUE;
+				u8IsTransmit = TRUE;
 
-				      /* Move PE to an idle state to wait for Good CRC reception */
-              // gasPolicyEngine[u8PortNum].ePESubState = ePE_VDM_INITIATE_VDM_IDLE_SS;                                       
+				/* Move PE to an idle state to wait for Good CRC reception */
+              			// gasPolicyEngine[u8PortNum].ePESubState = ePE_VDM_INITIATE_VDM_IDLE_SS;                                       
                     
-              break;
+              			break;
 			}
 
-			case ePE_VDM_INITIATE_VDEM_IDLE_SS:
+			/* Enter this state once chunked message is transmitted */
+			case ePE_VDEM_INITIATE_VDEM_MSG_DONE_SS:
 			{
-			  DEBUG_PRINT_PORT_STR (PSF_PE_LAYER_DEBUG_MSG,u8PortNum,"PE_VDM_INITIATE_VDEM_IDLE_SS\r\n");
-        /* Hook to notify PE state machine entry into idle sub-state - Not defined */
-        MCHP_PSF_HOOK_NOTIFY_IDLE(u8PortNum, eIDLE_PE_NOTIFY); 
-                
-        break;
+				DEBUG_PRINT_PORT_STR (PSF_PE_LAYER_DEBUG_MSG,u8PortNum,"PE_VDEM_INITIATE_VDEM_MSG_DONE_SS\r\n");
+
+				gasPolicyEngine [u8PortNum].ePEState = eTxDoneSt;
+				gasPolicyEngine [u8PortNum].ePESubState = eTxDoneSS;
+
+				break;
+				
 			}
+
+			case ePE_VDEM_INITIATE_VDEM_IDLE_SS:
+			{
+			  	DEBUG_PRINT_PORT_STR (PSF_PE_LAYER_DEBUG_MSG,u8PortNum,"PE_VDM_INITIATE_VDEM_IDLE_SS\r\n");
+        			/* Hook to notify PE state machine entry into idle sub-state - Not defined */
+        			MCHP_PSF_HOOK_NOTIFY_IDLE(u8PortNum, eIDLE_PE_NOTIFY); 
+                
+        			break;
+			}
+			
 			default:
 			{
 				break;
 			}
 		}
+    }
 
 	/* Transmit the message if u8IsTransmit is set */
     if (u8IsTransmit)
     {
 		(void) PRL_TransmitMsg (u8PortNum, (UINT8) PRL_SOP_TYPE, u32TransmitHeader, (UINT8 *)u32pTransmitDataObj, pfnTransmitCB, u32TransmitTmrIDTxSt); 
     }
-
 }
