@@ -17,7 +17,7 @@
 //DOM-IGNORE-BEGIN
 /*******************************************************************************
 
-Copyright © [2022] Microchip Technology Inc. and its subsidiaries.
+Copyright ï¿½ [2022] Microchip Technology Inc. and its subsidiaries.
 
 Subject to your compliance with these terms, you may use Microchip software and
 any derivatives exclusively with Microchip products. It is your responsibility
@@ -518,7 +518,8 @@ Note:
     to 1 is required to print status messages for the corresponding layer.
 
 **************************************************************************/
-#define CONFIG_HOOK_DEBUG_MSG      0                 
+// WenXian
+#define CONFIG_HOOK_DEBUG_MSG      1                 
 
 /**************************************************************************
 Summary:
@@ -562,7 +563,8 @@ Example:
 Note:
     None.
 **************************************************************************/
-#define PSF_PE_LAYER_DEBUG_MSG      0
+// WenXian
+#define PSF_PE_LAYER_DEBUG_MSG      1
 
 /**************************************************************************
 Summary:

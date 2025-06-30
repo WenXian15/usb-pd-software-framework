@@ -250,9 +250,9 @@ typedef enum {
     ePE_VDM_EVALUATE_VDM,            
     ePE_VDM_RESPOND_VDM,
     //---------------------------VDEM states---------------------------------------//
-    #if (TRUE == INCLUDE_PD_VDEM)
+    #ifdef INCLUDE_PD_VDEM
     ePE_VDEM_INITIATE_VDEM,
-    #end
+    #endif
     //-------------------------Common States------------------------------//
     ePE_GET_SINK_CAP,
     ePE_SOFT_RESET,
@@ -459,12 +459,12 @@ typedef enum {
     ePE_VDM_RESPOND_VDM_END_AMS_SS,
     ePE_VDM_RESPOND_VDM_IDLE_SS,
     //--------------------VDEM Sub States-------------------------------------------------//  
-    #if (TRUE == INCLUDE_PD_VDEM)
+    #ifdef INCLUDE_PD_VDEM
     /* ePE_VDEM_INITIATE_VDEM */
     ePE_VDEM_INITIATE_VDEM_ENTRY_SS,
     ePE_VDEM_INITIATE_VDEM_MSG_DONE_SS,
     ePE_VDEM_INITIATE_VDEM_IDLE_SS,
-    #end
+    #endif
     //--------------------Common States-------------------------------------------------//
     /* ePE_GET_SINK_CAP */
     ePE_GET_SINK_CAP_ENTRY_SS,
@@ -1324,5 +1324,9 @@ void PE_RunVDMStateMachine (UINT8 u8PortNum, UINT8 *pu8DataBuf, UINT32 u32Header
 
 **************************************************************************************************/
 void PE_HandleUnsupportedVDM (UINT8 u8PortNum);
+
+// WenXian
+void PE_RunVDEMStateMachine (UINT8 u8PortNum); 
+
 
 #endif /*_POLICY_ENGINE_H_*/

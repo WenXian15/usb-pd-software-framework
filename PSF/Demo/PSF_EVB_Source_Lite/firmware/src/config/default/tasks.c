@@ -54,6 +54,54 @@
 #include "definitions.h"
 
 
+typedef enum
+{
+    APP_STATE_WAIT_FOR_CONTRACT,
+    APP_STATE_CONTRACT_ESTABLISHED,
+    APP_STATE_CONTRACT_UNESTABLISHED
+} APP_STATES;
+
+static APP_STATES appState = APP_STATE_WAIT_FOR_CONTRACT;
+static UINT8 printOnceEstablished = 0;
+static UINT8 printOnceUnestablished = 0;
+
+void Explicit_Contract_Checker(void)
+{
+    switch (appState)
+    {
+        case APP_STATE_WAIT_FOR_CONTRACT:
+            if (PE_GET_PD_CONTRACT(1))
+            {
+                appState = APP_STATE_CONTRACT_ESTABLISHED;
+            } else {
+                appState = APP_STATE_CONTRACT_UNESTABLISHED;
+            }
+            break;
+            
+        case APP_STATE_CONTRACT_ESTABLISHED:
+            // static uint32_t lastTick = 0;
+            if (!printOnceEstablished)
+            {
+                DEBUG_PRINT_PORT_STR (PSF_PE_LAYER_DEBUG_MSG,u8PortNum," >>>>>>>>>> WenXian : EXPLICIT_CONTRACT_ESTABLISHED  <<<<<<<<<< \r\n");
+                printOnceEstablished = 1;
+            }
+            
+            break;
+        
+        case APP_STATE_CONTRACT_UNESTABLISHED:
+            if (!printOnceUnestablished)
+            {
+                DEBUG_PRINT_PORT_STR (PSF_PE_LAYER_DEBUG_MSG,u8PortNum," >>>>>>>>>> WenXian : APP_STATE_CONTRACT_UNESTABLISHED  <<<<<<<<<< \r\n");
+                printOnceUnestablished = 1;
+            }
+            appState = APP_STATE_WAIT_FOR_CONTRACT;
+            break;
+            
+        default:
+            break;
+    }
+}
+
 
 
 // *****************************************************************************
@@ -94,9 +142,8 @@ if(0 == isInitDone){
     /*PSF stack Run*/
     MchpPSF_RUN();
 
-
-
-
+    // WenXian
+    Explicit_Contract_Checker();
 
 }
 
