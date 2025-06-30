@@ -250,9 +250,9 @@ typedef enum {
     ePE_VDM_EVALUATE_VDM,            
     ePE_VDM_RESPOND_VDM,
     //---------------------------VDEM states---------------------------------------//
-    #ifdef INCLUDE_VDEM
+    #if (TRUE == INCLUDE_PD_VDEM)
     ePE_VDEM_INITIATE_VDEM,
-    #endif
+    #end
     //-------------------------Common States------------------------------//
     ePE_GET_SINK_CAP,
     ePE_SOFT_RESET,
@@ -459,12 +459,12 @@ typedef enum {
     ePE_VDM_RESPOND_VDM_END_AMS_SS,
     ePE_VDM_RESPOND_VDM_IDLE_SS,
     //--------------------VDEM Sub States-------------------------------------------------//  
-    #ifdef INCLUDE_VDEM
+    #if (TRUE == INCLUDE_PD_VDEM)
     /* ePE_VDEM_INITIATE_VDEM */
     ePE_VDEM_INITIATE_VDEM_ENTRY_SS,
     ePE_VDEM_INITIATE_VDEM_MSG_DONE_SS,
     ePE_VDEM_INITIATE_VDEM_IDLE_SS,
-    #endif
+    #end
     //--------------------Common States-------------------------------------------------//
     /* ePE_GET_SINK_CAP */
     ePE_GET_SINK_CAP_ENTRY_SS,
