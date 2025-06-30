@@ -211,7 +211,11 @@ void PE_RunStateMachine (UINT8 u8PortNum)
 
         #if (TRUE == INCLUDE_PD_VDM)
             PE_RunVDMStateMachine (u8PortNum, u8aDataBuf, u32Header);
-        #endif             
+        #endif
+
+	#if (TRUE == INCLUDE_PD_VDEM)
+	    PE_RunVDEMStateMachine (u8PortNum);
+	#endif
          
         if (PD_ROLE_SOURCE == DPM_GET_CURRENT_POWER_ROLE(u8PortNum))
         {
