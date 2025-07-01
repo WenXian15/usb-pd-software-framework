@@ -3,7 +3,8 @@
 #if (TRUE == INCLUDE_PD_VDEM)
 
 /* Msg_Header[4:0] - Message Type */
-#define PE_EXT_VDEM 0x00
+/* 11110 for Vendor_Defined_Extended */
+#define PE_EXT_VDEM 0x1E
 /* MaxExtendedMsgLen = 260 */
 #define MAX_VDEM_DATA_SIZE 260
 
@@ -16,7 +17,7 @@
 #define VDM_TYPE_MASK 	0x1
 #define VENDOR_USE_MASK 0x7FFF
 
-#define VID 		0x1234
+#define VID 		gasCfgStatusData.u16VendorID
 #define VDM_TYPE	0
 #define VENDOR_DATA	0x5678				
 
@@ -92,7 +93,7 @@ void PE_RunVDEMStateMachine(UINT8 u8PortNum)
                         // u32TransmitHeader = PRL_FormSOPTypeMsgHeader (u8PortNum, (UINT8)PE_DATA_VENDOR_DEFINED, (u8VDOCnt + BYTE_LEN_1), PE_EXTENDED_MSG);
 
                         /* Refer to policy_engine_fwup.c */
-                        u16Message_Header = PRL_FormSOPTypeMsgHeader (u8PortNum, PE_EXT_FW_UPDATE_RESPONSE, 7, PE_EXTENDED_MSG);
+                        u16Message_Header = PRL_FormSOPTypeMsgHeader (u8PortNum, PE_EXT_VDEM, 7, PE_EXTENDED_MSG);
                         // u16Extended_Header = (1u << PRL_EXTMSG_CHUNKED_BIT_POS) | (PRL_EXTMSG_DATA_FIELD_MASK & gsPdfuInfo.u16PDFUResponseLength);
                         u16Extended_Header = (1u << PRL_EXTMSG_CHUNKED_BIT_POS) | 
                                              (PRL_EXTMSG_DATA_FIELD_MASK & PRL_MAX_EXTN_MSG_LEN_IN_BYTES);
@@ -108,7 +109,7 @@ void PE_RunVDEMStateMachine(UINT8 u8PortNum)
                         u8IsTransmit = TRUE;
 
                         /* Move PE to an idle state to wait for Good CRC reception */
-              			gasPolicyEngine[u8PortNum].ePESubState = ePE_VDM_INITIATE_VDM_IDLE_SS;                                       
+              			gasPolicyEngine[u8PortNum].ePESubState = ePE_VDEM_INITIATE_VDEM_IDLE_SS;                                       
                     
               			break;
                     }

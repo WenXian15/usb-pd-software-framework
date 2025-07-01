@@ -861,15 +861,15 @@ void DPM_ClientRequestHandler(UINT8 u8PortNum)
 #endif
 #if (TRUE == INCLUDE_PD_VDEM)
     // WenXian
-    else if (u32ClientRequest & DPM_CLIENT_REQ_INITIATE_VDEM)
-    {
-        DEBUG_PRINT_PORT_STR (PSF_PE_LAYER_DEBUG_MSG,u8PortNum," >>>>>>>>>> WenXian : Registering DPM_INT_EVT_INITIATE_VDEM  <<<<<<<<<< \r\n");
+//    else if (u32ClientRequest & DPM_CLIENT_REQ_INITIATE_VDEM)
+//    {
+//        DEBUG_PRINT_PORT_STR (PSF_PE_LAYER_DEBUG_MSG,u8PortNum," >>>>>>>>>> WenXian : Registering DPM_INT_EVT_INITIATE_VDEM  <<<<<<<<<< \r\n");
         
-        /* Clear the request since the request is accepted and going to be handled */
-        u32ClientRequest &= ~(DPM_CLIENT_REQ_INITIATE_VDEM);
+//        /* Clear the request since the request is accepted and going to be handled */
+//        u32ClientRequest &= ~(DPM_CLIENT_REQ_INITIATE_VDEM);
         
-        DPM_RegisterInternalEvent (u8PortNum, DPM_INT_EVT_INITIATE_VDEM);
-    }
+//        DPM_RegisterInternalEvent (u8PortNum, DPM_INT_EVT_INITIATE_VDEM);
+//    }
 #endif /* INCLUDE_PD_VDEM */
 #if(TRUE == INCLUDE_UPD_HPD)
     else if (u32ClientRequest & DPM_CLIENT_REQ_DISABLE_HPD)

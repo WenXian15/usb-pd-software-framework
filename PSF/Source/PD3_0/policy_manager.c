@@ -1453,10 +1453,14 @@ void DPM_InitiateInternalEvts (UINT8 u8PortNum)
 #endif /*INCLUDE_PD_FR_SWAP*/
 
     // WenXian
-    /* Use GET_SINK_CAP Initiation approach to only register DPM_INT_EVT_INITIATE_VDEM once */
-    /* Run once require reset to transmit again */
+    /* Only send after after PD_CONTRACT_NEGOTIATED */
+    /* Send once after retriving Sink Capabilities using GET_SINK_CAP approach  */
+    /* Trigger reset to retransmit */
 #if(TRUE == INCLUDE_PD_VDEM)
-    if ((!gasCfgStatusData.sPerPortData[u8PortNum].u32aPartnerSinkPDO[INDEX_0]) && (PD_ROLE_DFP == u8CurrentDataRole) && (PD_ROLE_DFP == u8DefaultDataRole))
+    if ((!gasCfgStatusData.sPerPortData[u8PortNum].u32aPartnerSinkPDO[INDEX_0]) && 
+          (PD_ROLE_DFP == u8CurrentDataRole) &&
+          (PD_ROLE_DFP == u8DefaultDataRole) &&
+          (TRUE == DPM_NotifyClient(u8PortNum, eMCHP_PSF_PD_CONTRACT_NEGOTIATED)))
         {
             DPM_RegisterInternalEvent (u8PortNum, DPM_INT_EVT_INITIATE_VDEM);
             DEBUG_PRINT_PORT_STR (PSF_PE_LAYER_DEBUG_MSG,u8PortNum," >>>>>>>>>> WenXian : Register DPM_INT_EVT_INITIATE_VDEM  <<<<<<<<<< \r\n");
