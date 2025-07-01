@@ -214,6 +214,7 @@ void PE_RunStateMachine (UINT8 u8PortNum)
         #endif
 
         #if (TRUE == INCLUDE_PD_VDEM)
+            // WenXian
             PE_RunVDEMStateMachine (u8PortNum);
         #endif
          

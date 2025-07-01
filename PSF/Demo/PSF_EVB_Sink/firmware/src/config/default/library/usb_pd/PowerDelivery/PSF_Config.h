@@ -480,7 +480,8 @@ Note:
     Along with setting CONFIG_HOOK_DEBUG_MSG to 1, setting Debug Message Layer macros
     to 1 is required to print status messages for the corresponding layer.
 **************************************************************************/
-#define CONFIG_HOOK_DEBUG_MSG      0    
+// WenXian
+#define CONFIG_HOOK_DEBUG_MSG      1    
 
 /**************************************************************************
 Summary:
@@ -502,7 +503,8 @@ Example:
 Note:
     None.
 **************************************************************************/
-#define PSF_DPM_LAYER_DEBUG_MSG      0 
+// WenXian
+#define PSF_DPM_LAYER_DEBUG_MSG      1 
 
 /**************************************************************************
 Summary:
@@ -524,7 +526,8 @@ Example:
 Note:
     None.
 **************************************************************************/
-#define PSF_PE_LAYER_DEBUG_MSG      0
+// WenXian
+#define PSF_PE_LAYER_DEBUG_MSG      1
 
 /**************************************************************************
 Summary:

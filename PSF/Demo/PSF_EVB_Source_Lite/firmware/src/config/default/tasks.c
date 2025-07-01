@@ -84,6 +84,9 @@ void Explicit_Contract_Checker(void)
             {
                 DEBUG_PRINT_PORT_STR (PSF_PE_LAYER_DEBUG_MSG,u8PortNum," >>>>>>>>>> WenXian : EXPLICIT_CONTRACT_ESTABLISHED  <<<<<<<<<< \r\n");
                 printOnceEstablished = 1;
+                
+                // DPM_RegisterInternalEvent (1, DPM_INT_EVT_INITIATE_VDEM);
+                // gasCfgStatusData.sPerPortData[1].u32ClientRequest |= DPM_CLIENT_REQ_INITIATE_VDEM;
             }
             
             break;

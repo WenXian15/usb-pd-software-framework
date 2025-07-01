@@ -38,11 +38,12 @@ int main ( void )
 {
     /* Initialize all modules */
     SYS_Initialize ( NULL );
-
+    
     while ( true )
     {
         /* Maintain state machines of all polled MPLAB Harmony modules. */
         SYS_Tasks ( );
+        // DEBUG_PRINT_PORT_STR (PSF_PE_LAYER_DEBUG_MSG,1," >>>>>>>>>> WenXian : Initialization  <<<<<<<<<< \r\n");
     }
 
     /* Execution should not come here during normal operation */

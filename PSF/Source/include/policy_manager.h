@@ -780,6 +780,7 @@ Source/Sink Power delivery objects*/
 #define DPM_CLIENT_REQ_INITIATE_VDM              BIT(10)
 #define DPM_CLIENT_REQ_DISABLE_HPD               BIT(11)
 #define DPM_CLIENT_REQ_ENABLE_HPD                BIT(12)
+#define DPM_CLIENT_REQ_INITIATE_VDEM              BIT(13)
 
 /***************************Internal Events Defines**********************************/
 #define DPM_INT_EVT_HANDLE_SYSTEM_POWER_LOSS        BIT(0)
@@ -795,6 +796,8 @@ Source/Sink Power delivery objects*/
 #define DPM_INT_EVT_INITIATE_ALERT                  BIT(10)
 #define DPM_INT_EVT_INITIATE_GET_STATUS             BIT(11)
 #define DPM_INT_EVT_DISCOVER_CABLE_IDENTITY         BIT(12)
+// WenXian
+#define DPM_INT_EVT_INITIATE_VDEM                   BIT(13)
 
 /******************** Port Power/Data State used for initiating FRS ******************/
 #define PD_ROLE_SINK_DFP        1 
@@ -861,7 +864,8 @@ typedef struct MCHP_PSF_STRUCT_PACKED_START
                                         // BIT(9) - DPM_INT_EVT_INITIATE_VDM                    
                                         // BIT(10) - DPM_INT_EVT_INITIATE_ALERT                 
                                         // BIT(11) - DPM_INT_EVT_INITIATE_GET_STATUS            
-                                        // BIT(12) - DPM_INT_EVT_DISCOVER_CABLE_IDENTITY        
+                                        // BIT(12) - DPM_INT_EVT_DISCOVER_CABLE_IDENTITY
+                                        // BIT(13) - DPM_INT_EVT_INITIATE_VDEM
   UINT8 u8DPMConfigData;                // Bit  1:0 - Default Port Power Role
                                         // Bit  3:2 - Default Port Data Role
                                         // Bits 5:4 - Default PD Spec Revision

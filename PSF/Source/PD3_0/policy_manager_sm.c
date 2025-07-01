@@ -859,6 +859,18 @@ void DPM_ClientRequestHandler(UINT8 u8PortNum)
         DPM_RegisterInternalEvent (u8PortNum, DPM_INT_EVT_INITIATE_VDM);                                    
     }  /* DPM_CLIENT_REQ_INITIATE_VDM */
 #endif
+#if (TRUE == INCLUDE_PD_VDEM)
+    // WenXian
+    else if (u32ClientRequest & DPM_CLIENT_REQ_INITIATE_VDEM)
+    {
+        DEBUG_PRINT_PORT_STR (PSF_PE_LAYER_DEBUG_MSG,u8PortNum," >>>>>>>>>> WenXian : Registering DPM_INT_EVT_INITIATE_VDEM  <<<<<<<<<< \r\n");
+        
+        /* Clear the request since the request is accepted and going to be handled */
+        u32ClientRequest &= ~(DPM_CLIENT_REQ_INITIATE_VDEM);
+        
+        DPM_RegisterInternalEvent (u8PortNum, DPM_INT_EVT_INITIATE_VDEM);
+    }
+#endif /* INCLUDE_PD_VDEM */
 #if(TRUE == INCLUDE_UPD_HPD)
     else if (u32ClientRequest & DPM_CLIENT_REQ_DISABLE_HPD)
     {
@@ -1210,6 +1222,17 @@ void DPM_InternalEventHandler (UINT8 u8PortNum)
             u16AMSInProgress = DPM_INT_EVT_INITIATE_VDM;            
         }
 #endif /* INCLUDE_PD_VDM */
+        
+#if (TRUE == INCLUDE_PD_VDEM)
+        else if (gasDPM[u8PortNum].u16DPMInternalEvents & DPM_INT_EVT_INITIATE_VDEM)
+        {
+            gasPolicyEngine[u8PortNum].ePEState = ePE_VDEM_INITIATE_VDEM;
+            gasPolicyEngine[u8PortNum].ePESubState = ePE_VDEM_INITIATE_VDEM_ENTRY_SS;
+            
+            u16AMSInProgress = DPM_INT_EVT_INITIATE_VDEM;
+        }
+#endif /* INCLUDE_PD_VDEM */
+        
 #if (TRUE == INCLUDE_PD_SOURCE_PPS)
         else if (gasDPM[u8PortNum].u16DPMInternalEvents & DPM_INT_EVT_INITIATE_ALERT)
         {     

@@ -108,7 +108,7 @@ void PE_RunVDEMStateMachine(UINT8 u8PortNum)
                         u8IsTransmit = TRUE;
 
                         /* Move PE to an idle state to wait for Good CRC reception */
-              			// gasPolicyEngine[u8PortNum].ePESubState = ePE_VDM_INITIATE_VDM_IDLE_SS;                                       
+              			gasPolicyEngine[u8PortNum].ePESubState = ePE_VDM_INITIATE_VDM_IDLE_SS;                                       
                     
               			break;
                     }

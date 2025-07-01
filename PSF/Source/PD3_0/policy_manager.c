@@ -1371,6 +1371,11 @@ void DPM_InitiateInternalEvts (UINT8 u8PortNum)
     
 	UINT8 u8DefaultPwrRole = DPM_GET_DEFAULT_POWER_ROLE(u8PortNum);  
     UINT8 u8CurrentPwrRole = DPM_GET_CURRENT_POWER_ROLE(u8PortNum);
+#if(TRUE == INCLUDE_PD_VDEM)
+    // WenXian
+    UINT8 u8DefaultDataRole = DPM_GET_DEFAULT_DATA_ROLE(u8PortNum);
+    UINT8 u8CurrentDataRole = DPM_GET_CURRENT_DATA_ROLE(u8PortNum);
+#endif
 
             /**************** GET_SINK_CAP Initiation **************/
     /* Initiate Get Sink Caps if the PartnerSinkPDO array is null. If it is not 
@@ -1387,6 +1392,7 @@ void DPM_InitiateInternalEvts (UINT8 u8PortNum)
             (FALSE == DPM_GET_PDO_DUAL_POWER(gasCfgStatusData.sPerPortData[u8PortNum].u32aPartnerSourcePDO[INDEX_0]))))
         {
             DPM_RegisterInternalEvent (u8PortNum, DPM_INT_EVT_INITIATE_GET_SINK_CAPS);
+            DEBUG_PRINT_PORT_STR (PSF_PE_LAYER_DEBUG_MSG,u8PortNum," >>>>>>>>>> WenXian : Register DPM_INT_EVT_INITIATE_GET_SINK_CAPS  <<<<<<<<<< \r\n");
         }   
     }         
             /*************** VCONN_SWAP Initiation ***********/
@@ -1444,7 +1450,18 @@ void DPM_InitiateInternalEvts (UINT8 u8PortNum)
             DPM_EvaluateAndGearUpForFRS (u8PortNum);        
         }        
     }
-#endif /*INCLUDE_PD_FR_SWAP*/    
+#endif /*INCLUDE_PD_FR_SWAP*/
+
+    // WenXian
+    /* Use GET_SINK_CAP Initiation approach to only register DPM_INT_EVT_INITIATE_VDEM once */
+    /* Run once require reset to transmit again */
+#if(TRUE == INCLUDE_PD_VDEM)
+    if ((!gasCfgStatusData.sPerPortData[u8PortNum].u32aPartnerSinkPDO[INDEX_0]) && (PD_ROLE_DFP == u8CurrentDataRole) && (PD_ROLE_DFP == u8DefaultDataRole))
+        {
+            DPM_RegisterInternalEvent (u8PortNum, DPM_INT_EVT_INITIATE_VDEM);
+            DEBUG_PRINT_PORT_STR (PSF_PE_LAYER_DEBUG_MSG,u8PortNum," >>>>>>>>>> WenXian : Register DPM_INT_EVT_INITIATE_VDEM  <<<<<<<<<< \r\n");
+        }
+#endif
 }
 
 /********************DPM API to handle Fast Role Swap initiation ************************/
