@@ -26,14 +26,11 @@ void PE_RunVDEMStateMachine(UINT8 u8PortNum)
         /* VDM Data Object Array */
         /* PRL_MAX_EXTN_MSG_LEN_IN_BYTES = 260 bytes = 256 bytes + 4 bytes VDM Header */
         /* Message > 26 bytes will be automatically chunked by PSF */
-    	// UINT32 u32aVDEMDataObj[PRL_MAX_EXTN_MSG_LEN_IN_BYTES] = {SET_TO_ZERO};
-        UINT8 u32aVDEMDataObj[PRL_MAX_EXTN_MSG_LEN_IN_BYTES] = {SET_TO_ZERO};
+        UINT8 u8aVDEMDataArray[PRL_MAX_EXTN_MSG_LEN_IN_BYTES] = {SET_TO_ZERO};
 
     	// Transmit Header and Data Pointer
-    	// UINT32 u32TransmitHeader = SET_TO_ZERO;
         UINT16 u16Message_Header = SET_TO_ZERO;
         UINT16 u16Extended_Header = SET_TO_ZERO;
-        // UINT32 pu32Msg_Header = SET_TO_ZERO;
         UINT32 u32TransmitHeader = SET_TO_ZERO;
         UINT32 u32VDMHeader = SET_TO_ZERO;
 
@@ -86,8 +83,8 @@ void PE_RunVDEMStateMachine(UINT8 u8PortNum)
                         u32VDMHeader = ((UINT32) (VID & VID_MASK) << VID_POS) | 
                                        ((UINT32) (VDM_TYPE & VDM_TYPE_MASK) << VDM_TYPE_POS) |
                                        ((UINT32) (VENDOR_DATA & VENDOR_USE_MASK) << VENDOR_USE_POS);
-                        memcpy(u32aVDEMDataObj, &u32VDMHeader, 4);
-                        u32pTransmitDataObj = (UINT32 *)u32aVDEMDataObj;
+                        memcpy(u8aVDEMDataArray, &u32VDMHeader, 4);
+                        u32pTransmitDataObj = (UINT32 *)u8aVDEMDataArray;
 				
                         /* Refer pg 116 */
                         /* Number of Data Objects indicate the number of 32-bit Data Objects that follow the Message Header~ */
