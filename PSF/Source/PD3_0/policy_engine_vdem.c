@@ -24,10 +24,10 @@
 void PE_RunVDEMStateMachine(UINT8 u8PortNum)
 {
         /* VDM Data Object Array */
-    	UINT32 u32aVDMDataObj[PRL_MAX_EXTN_MSG_LEN_IN_BYTES] = {SET_TO_ZERO};
-	
-    	/* VDM Data Object Count */
-    	// UINT8 u8VDOCnt = SET_TO_ZERO;	// Set to 6 to mimic fwud
+        /* PRL_MAX_EXTN_MSG_LEN_IN_BYTES = 260 bytes = 256 bytes + 4 bytes VDM Header */
+        /* Message > 26 bytes will be automatically chunked by PSF */
+    	// UINT32 u32aVDEMDataObj[PRL_MAX_EXTN_MSG_LEN_IN_BYTES] = {SET_TO_ZERO};
+        UINT8 u32aVDEMDataObj[PRL_MAX_EXTN_MSG_LEN_IN_BYTES] = {SET_TO_ZERO};
 
     	// Transmit Header and Data Pointer
     	// UINT32 u32TransmitHeader = SET_TO_ZERO;
@@ -35,6 +35,7 @@ void PE_RunVDEMStateMachine(UINT8 u8PortNum)
         UINT16 u16Extended_Header = SET_TO_ZERO;
         // UINT32 pu32Msg_Header = SET_TO_ZERO;
         UINT32 u32TransmitHeader = SET_TO_ZERO;
+        UINT32 u32VDMHeader = SET_TO_ZERO;
 
     	/* Transmit Data Object */
     	UINT32 *u32pTransmitDataObj = SET_TO_ZERO;
@@ -78,12 +79,15 @@ void PE_RunVDEMStateMachine(UINT8 u8PortNum)
                         DEBUG_PRINT_PORT_STR (PSF_PE_LAYER_DEBUG_MSG,u8PortNum,"PE_VDEM_INITIATE_VDEM_ENTRY_SS\r\n");
 
               			/* Form VDM Header or use CFG_FORM_VDM_HEADER(svid,vdmType,svdmVersion,objPos,cmdType,cmd) */
-                        u32aVDMDataObj[INDEX_0] = ((UINT32) (VID & VID_MASK) << VID_POS) | 
-                                                  ((UINT32) (VDM_TYPE & VDM_TYPE_POS) << VDM_TYPE_POS) | 
-                                                  ((UINT32) (VENDOR_DATA & VENDOR_USE_MASK) << VENDOR_USE_POS);
-
-                        // u32aVDMDataObj[INDEX_0] = gasCfgStatusData.sVDMPerPortData[u8PortNum].u32VDMHeader;
-                        u32pTransmitDataObj = u32aVDMDataObj;
+                        //u32aVDEMDataObj[INDEX_0] = ((UINT32) (VID & VID_MASK) << VID_POS) | 
+                        //                          ((UINT32) (VDM_TYPE & VDM_TYPE_MASK) << VDM_TYPE_POS) | 
+                        //                          ((UINT32) (VENDOR_DATA & VENDOR_USE_MASK) << VENDOR_USE_POS);
+                        //u32pTransmitDataObj = u32aVDEMDataObj;
+                        u32VDMHeader = ((UINT32) (VID & VID_MASK) << VID_POS) | 
+                                       ((UINT32) (VDM_TYPE & VDM_TYPE_MASK) << VDM_TYPE_POS) |
+                                       ((UINT32) (VENDOR_DATA & VENDOR_USE_MASK) << VENDOR_USE_POS);
+                        memcpy(u32aVDEMDataObj, &u32VDMHeader, 4);
+                        u32pTransmitDataObj = (UINT32 *)u32aVDEMDataObj;
 				
                         /* Refer pg 116 */
                         /* Number of Data Objects indicate the number of 32-bit Data Objects that follow the Message Header~ */
@@ -93,11 +97,10 @@ void PE_RunVDEMStateMachine(UINT8 u8PortNum)
                         // u32TransmitHeader = PRL_FormSOPTypeMsgHeader (u8PortNum, (UINT8)PE_DATA_VENDOR_DEFINED, (u8VDOCnt + BYTE_LEN_1), PE_EXTENDED_MSG);
 
                         /* Refer to policy_engine_fwup.c */
-                        u16Message_Header = PRL_FormSOPTypeMsgHeader (u8PortNum, PE_EXT_VDEM, 7, PE_EXTENDED_MSG);
-                        // u16Extended_Header = (1u << PRL_EXTMSG_CHUNKED_BIT_POS) | (PRL_EXTMSG_DATA_FIELD_MASK & gsPdfuInfo.u16PDFUResponseLength);
+                        /* Number of VDO 260+3/4 = 65 where 4 bytes VDM Header is included */
+                        u16Message_Header = PRL_FormSOPTypeMsgHeader (u8PortNum, PE_EXT_VDEM, (PRL_MAX_EXTN_MSG_LEN_IN_BYTES+3)/4, PE_EXTENDED_MSG);
                         u16Extended_Header = (1u << PRL_EXTMSG_CHUNKED_BIT_POS) | 
                                              (PRL_EXTMSG_DATA_FIELD_MASK & PRL_MAX_EXTN_MSG_LEN_IN_BYTES);
-                        // pu32Msg_Header = PRL_FORM_COMBINED_MSG_HEADER(u16Extended_Header, u16Message_Header);
                         u32TransmitHeader = PRL_FORM_COMBINED_MSG_HEADER(u16Extended_Header, u16Message_Header);
 
                 
