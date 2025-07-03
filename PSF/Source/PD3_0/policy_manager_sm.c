@@ -1226,6 +1226,9 @@ void DPM_InternalEventHandler (UINT8 u8PortNum)
 #if (TRUE == INCLUDE_PD_VDEM)
         else if (gasDPM[u8PortNum].u16DPMInternalEvents & DPM_INT_EVT_INITIATE_VDEM)
         {
+            /* Clear the Internal event since it is processed */
+            gasDPM[u8PortNum].u16DPMInternalEvents &= ~(DPM_INT_EVT_INITIATE_VDEM);
+                    
             gasPolicyEngine[u8PortNum].ePEState = ePE_VDEM_INITIATE_VDEM;
             gasPolicyEngine[u8PortNum].ePESubState = ePE_VDEM_INITIATE_VDEM_ENTRY_SS;
             
