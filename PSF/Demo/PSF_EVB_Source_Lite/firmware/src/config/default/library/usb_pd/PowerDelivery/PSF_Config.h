@@ -43,6 +43,8 @@ HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
 
 #include <generic_defs.h>
 
+#define USB_DR_SWAP_DEVICE_1    1
+
 //DOM-IGNORE-END
 
 // *****************************************************************************
@@ -206,7 +208,7 @@ Example:
     #define INCLUDE_POWER_MANAGEMENT_CTRL	0(Exclude power management feature)
     </code>
 **************************************************************************************************/
-#define INCLUDE_POWER_MANAGEMENT_CTRL         1
+#define INCLUDE_POWER_MANAGEMENT_CTRL         0
 
 /**************************************************************************
 Summary:
@@ -300,7 +302,11 @@ Example:
     #define INCLUDE_PD_DR_SWAP	0(Exclude DR_SWAP functionality from PSF)
     </code>
 **************************************************************************************************/
+#if(USB_DR_SWAP_DEVICE_1 == TRUE)
+#define INCLUDE_PD_DR_SWAP           1
+#else
 #define INCLUDE_PD_DR_SWAP           0
+#endif
 
 /**************************************************************************************************
 Summary:
@@ -338,7 +344,7 @@ Example:
 **************************************************************************************************/
 #define INCLUDE_PD_VDM             0
 // WenXian
-#define INCLUDE_PD_VDEM            1
+#define INCLUDE_PD_VDEM            0
 
 /**************************************************************************************************
 Summary:
