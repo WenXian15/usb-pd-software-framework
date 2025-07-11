@@ -43,6 +43,10 @@ HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
 
 #include <generic_defs.h>
 
+
+#define USBPC_HOST_8               1
+#define USB_DR_SWAP_HOST           1
+
 //DOM-IGNORE-END
 
 // *****************************************************************************
@@ -300,8 +304,11 @@ Example:
     #define INCLUDE_PD_DR_SWAP	0(Exclude DR_SWAP functionality from PSF)
     </code>
 **************************************************************************************************/
+#if (USB_DR_SWAP_DEVICE_1 == TRUE)
+#define INCLUDE_PD_DR_SWAP           1
+#else
 #define INCLUDE_PD_DR_SWAP           0
-
+#endif
 /**************************************************************************************************
 Summary:
     Power Role Swap support code inclusion.
