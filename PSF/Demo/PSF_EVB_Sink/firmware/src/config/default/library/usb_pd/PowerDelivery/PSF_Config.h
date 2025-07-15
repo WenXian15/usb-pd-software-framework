@@ -44,8 +44,8 @@ HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
 #include <generic_defs.h>
 
 
-#define USBPC_HOST_8               1
-#define USB_DR_SWAP_HOST           1
+#define USBPC_HOST_8               0
+#define USB_DR_SWAP_HOST           0
 
 //DOM-IGNORE-END
 
