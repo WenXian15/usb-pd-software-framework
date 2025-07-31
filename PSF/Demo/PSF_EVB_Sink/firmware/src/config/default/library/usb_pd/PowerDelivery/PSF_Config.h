@@ -45,7 +45,10 @@ HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
 
 
 #define USBPC_HOST_8               0
-#define USB_DR_SWAP_HOST           0
+#define USB_DR_SWAP_HOST           1
+#define USB_BIST_DEVICE_CARRIER_MODE    0
+#define USB_BIST_DEVICE_TEST_DATA    0
+
 
 //DOM-IGNORE-END
 
@@ -304,7 +307,7 @@ Example:
     #define INCLUDE_PD_DR_SWAP	0(Exclude DR_SWAP functionality from PSF)
     </code>
 **************************************************************************************************/
-#if (USB_DR_SWAP_DEVICE_1 == TRUE)
+#if (USB_DR_SWAP_HOST == TRUE)
 #define INCLUDE_PD_DR_SWAP           1
 #else
 #define INCLUDE_PD_DR_SWAP           0

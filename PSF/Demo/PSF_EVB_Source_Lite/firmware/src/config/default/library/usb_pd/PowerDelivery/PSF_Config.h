@@ -17,7 +17,7 @@
 //DOM-IGNORE-BEGIN
 /*******************************************************************************
 
-Copyright ©  [2022] Microchip Technology Inc. and its subsidiaries.
+Copyright ï¿½  [2022] Microchip Technology Inc. and its subsidiaries.
 
 Subject to your compliance with these terms, you may use Microchip software and
 any derivatives exclusively with Microchip products. It is your responsibility
@@ -43,8 +43,10 @@ HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
 
 #include <generic_defs.h>
 
-#define USB_DR_SWAP_DEVICE    1
+#define USB_DR_SWAP_DEVICE    0
 #define INCLUDE_PD_VDEM       0
+#define USB_BIST_DEVICE_CARRIER_MODE    0
+#define USB_BIST_DEVICE_TEST_DATA    0
 
 //DOM-IGNORE-END
 
@@ -75,7 +77,7 @@ Example:
     #define INCLUDE_PD_3_0	0(Exclude USB PD 3.0 specific features from PSF)
     </code>
 **************************************************************************************************/
-#define INCLUDE_PD_3_0                     1
+#define INCLUDE_PD_3_0                     0
 
 /**************************************************************************************************
 Summary:

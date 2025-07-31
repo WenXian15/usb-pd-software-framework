@@ -798,6 +798,8 @@ Source/Sink Power delivery objects*/
 #define DPM_INT_EVT_DISCOVER_CABLE_IDENTITY         BIT(12)
 // WenXian
 #define DPM_INT_EVT_INITIATE_VDEM                   BIT(13)
+#define DPM_INT_EVT_INITIATE_BIST_CARRIER_MODE      BIT(14)
+#define DPM_INT_EVT_INITIATE_BIST_TEST_DATA         BIT(15)
 
 /******************** Port Power/Data State used for initiating FRS ******************/
 #define PD_ROLE_SINK_DFP        1 

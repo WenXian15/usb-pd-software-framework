@@ -2232,7 +2232,7 @@ typedef struct _PPSPortCfgStatus
    Remarks:
      None                                                               
    **********************************************************************/
-
+// WenXin
 typedef struct _GlobalCfgStatusData 
 {
     UINT8 u8MinorVersion;  

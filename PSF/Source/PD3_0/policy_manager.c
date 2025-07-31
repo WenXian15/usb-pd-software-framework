@@ -1080,6 +1080,7 @@ void DPM_EvaluateRcvdSrcCaps (UINT8 u8PortNum, UINT16 u16RecvdSrcCapsHeader,
     
     for (u8SrcIndex = SET_TO_ZERO; u8SrcIndex < u8PartnerSourcePDOCnt; u8SrcIndex++)
     {
+        DEBUG_PRINT_PORT_STR (PSF_PE_LAYER_DEBUG_MSG,u8PortNum,"Wen Xian - Compare Source Power Greater >= maximum Sink Power \r\n");
         /* Comparing whether any of Source power is greater than or 
          * equal to maximum Sink power*/
         if (u8SrcPower[u8SrcIndex][DPM_PDO_PWR] >= u8SinkPower[DPM_PDO_WITH_MAX_PWR][DPM_PDO_PWR])
@@ -1153,6 +1154,7 @@ void DPM_EvaluateRcvdSrcCaps (UINT8 u8PortNum, UINT16 u16RecvdSrcCapsHeader,
     /* Check DPM whether minimum PDO current matches*/
     for (u8SrcIndex = SET_TO_ZERO; u8SrcIndex < u8PartnerSourcePDOCnt; u8SrcIndex++)
     {
+        DEBUG_PRINT_PORT_STR (PSF_PE_LAYER_DEBUG_MSG,u8PortNum,"Wen Xian - Check DPM whether minimum PDO current matches \r\n");
         u8SrcPDOIndex = u8SrcPower[u8SrcIndex][DPM_PDO_INDEX];
         u32RcvdSrcPDO = u32aPartnerSourcePDO[u8SrcPDOIndex];
         for (u8SinkIndex = SET_TO_ZERO; u8SinkIndex < u8SinkAdvertisedPDOCnt; u8SinkIndex++)
@@ -1173,6 +1175,28 @@ void DPM_EvaluateRcvdSrcCaps (UINT8 u8PortNum, UINT16 u16RecvdSrcCapsHeader,
                     /*u16SinkRDOCurIn10mA will be greater than or equal to u16SinkRDOCurIn10mA */
                     u16SinkRDOCurIn10mA = DPM_GET_PDO_CURRENT(u32RcvdSrcPDO);
                 }
+                
+#if(USBPC_HOST_8 == TRUE)
+                if (u8SinkGiveBackFlag)
+                {
+                    /*if go to min supported Form request message with minimum current */
+                    /* Form Request message with Capability Mismatch*/
+                    gasCfgStatusData.sPerPortData[u8PortNum].u32RDO = \
+                            DPM_FORM_DATA_REQUEST((u8SrcPDOIndex + BYTE_LEN_4), u8CapMismatch,
+                            u8SinkGiveBackFlag, DPM_GET_PDO_USB_COMM_CAP(u32SinkAdvertisedPDO),\
+                            u8SinkNoUSBSusp, u16SinkRDOCurIn10mA,\
+                            (gasCfgStatusData.sPerPortData[u8PortNum].u16SnkMinOperatingCurInmA / DPM_PDO_CURRENT_UNIT));      
+                }
+                else
+                {
+                     /* Form Request message with Capability Mismatch*/
+                    gasCfgStatusData.sPerPortData[u8PortNum].u32RDO = \
+                            DPM_FORM_DATA_REQUEST((u8SrcPDOIndex + BYTE_LEN_4), u8CapMismatch,
+                            u8SinkGiveBackFlag, DPM_GET_PDO_USB_COMM_CAP(u32SinkAdvertisedPDO),\
+                            u8SinkNoUSBSusp, u16SinkRDOCurIn10mA,\
+                                                DPM_GET_PDO_CURRENT(u32RcvdSrcPDO));
+                }                
+#else
                 if (u8SinkGiveBackFlag)
                 {
                     /*if go to min supported Form request message with minimum current */
@@ -1192,6 +1216,7 @@ void DPM_EvaluateRcvdSrcCaps (UINT8 u8PortNum, UINT16 u16RecvdSrcCapsHeader,
                             u8SinkNoUSBSusp, u16SinkRDOCurIn10mA,\
                                                 DPM_GET_PDO_CURRENT(u32RcvdSrcPDO));
                 }
+#endif                
                 gasDPM[u8PortNum].u16SinkOperatingCurrInmA = (u16SinkRDOCurIn10mA * DPM_PDO_CURRENT_UNIT);
                 /*Updating the globals with Sink PDO selected */
                 gasDPM[u8PortNum].u32NegotiatedPDO = u32RcvdSrcPDO;
@@ -1211,6 +1236,7 @@ void DPM_EvaluateRcvdSrcCaps (UINT8 u8PortNum, UINT16 u16RecvdSrcCapsHeader,
     u8CapMismatch = TRUE;   
     for (u8SrcIndex = SET_TO_ZERO; u8SrcIndex < u8PartnerSourcePDOCnt; u8SrcIndex++)
     {
+        DEBUG_PRINT_PORT_STR (PSF_PE_LAYER_DEBUG_MSG,u8PortNum,"Wen Xian - None of the capability matches \r\n");
         u8SrcPDOIndex = u8SrcPower[u8SrcIndex][DPM_PDO_INDEX];
         u32RcvdSrcPDO = u32aPartnerSourcePDO[u8SrcPDOIndex];
         
@@ -1221,6 +1247,28 @@ void DPM_EvaluateRcvdSrcCaps (UINT8 u8PortNum, UINT16 u16RecvdSrcCapsHeader,
             
             if ((DPM_GET_PDO_VOLTAGE(u32RcvdSrcPDO)) == DPM_GET_PDO_VOLTAGE(u32SinkAdvertisedPDO))
             {
+
+#if(USBPC_HOST_8 == TRUE)                
+                if (u8SinkGiveBackFlag)
+                {
+                    /*if go to min supported Form request message with minimum current */
+                    /* Form Request message with Capability Mismatch*/
+                    gasCfgStatusData.sPerPortData[u8PortNum].u32RDO = \
+                            DPM_FORM_DATA_REQUEST((u8SrcPDOIndex + BYTE_LEN_4), u8CapMismatch,
+                            u8SinkGiveBackFlag, DPM_GET_PDO_USB_COMM_CAP(u32SinkAdvertisedPDO),\
+                            u8SinkNoUSBSusp, DPM_GET_PDO_CURRENT(u32RcvdSrcPDO),\
+                            (gasCfgStatusData.sPerPortData[u8PortNum].u16SnkMinOperatingCurInmA / DPM_10mA));      
+                }
+                else
+                {
+                     /* Form Request message with Capability Mismatch*/
+                    gasCfgStatusData.sPerPortData[u8PortNum].u32RDO = \
+                            DPM_FORM_DATA_REQUEST((u8SrcPDOIndex + BYTE_LEN_4), u8CapMismatch,
+                            u8SinkGiveBackFlag, DPM_GET_PDO_USB_COMM_CAP(u32SinkAdvertisedPDO),\
+                            u8SinkNoUSBSusp, DPM_GET_PDO_CURRENT(u32RcvdSrcPDO),\
+                                                DPM_GET_PDO_CURRENT(u32SinkAdvertisedPDO));
+                }
+#else
                 if (u8SinkGiveBackFlag)
                 {
                     /*if go to min supported Form request message with minimum current */
@@ -1239,7 +1287,8 @@ void DPM_EvaluateRcvdSrcCaps (UINT8 u8PortNum, UINT16 u16RecvdSrcCapsHeader,
                             u8SinkGiveBackFlag, DPM_GET_PDO_USB_COMM_CAP(u32SinkAdvertisedPDO),\
                             u8SinkNoUSBSusp, DPM_GET_PDO_CURRENT(u32RcvdSrcPDO),\
                                                 DPM_GET_PDO_CURRENT(u32SinkAdvertisedPDO));
-                }
+                }                
+#endif
                 gasDPM[u8PortNum].u16SinkOperatingCurrInmA = (DPM_GET_PDO_CURRENT(u32RcvdSrcPDO) * DPM_10mA);
                 
                 /*Updating the globals with Sink PDO selected */
@@ -1495,7 +1544,24 @@ void DPM_InitiateInternalEvts (UINT8 u8PortNum)
             u8VDEMSent[u8PortNum] = TRUE;
         }
 #endif
+#if(TRUE == USB_BIST_DEVICE_CARRIER_MODE)
+    if (gasCfgStatusData.sPerPortData[u8PortNum].u32aPartnerSinkPDO[INDEX_0])
+    {
+        DPM_RegisterInternalEvent (u8PortNum, DPM_INT_EVT_INITIATE_BIST_CARRIER_MODE);
+        DEBUG_PRINT_PORT_STR (PSF_PE_LAYER_DEBUG_MSG,u8PortNum," >>>>>>>>>> WenXian : Register DPM_INT_EVT_INITIATE_BIST_CARRIER_MODE  <<<<<<<<<< \r\n");
+    }
+#endif /* USB_BIST_DEVICE_CARRIER_MODE */    
+#if(TRUE == USB_BIST_DEVICE_TEST_DATA) 
+    if (gasCfgStatusData.sPerPortData[u8PortNum].u32aPartnerSinkPDO[INDEX_0])
+    {
+        DPM_RegisterInternalEvent (u8PortNum, DPM_INT_EVT_INITIATE_BIST_TEST_DATA);
+        DEBUG_PRINT_PORT_STR (PSF_PE_LAYER_DEBUG_MSG,u8PortNum," >>>>>>>>>> WenXian : Register DPM_INT_EVT_INITIATE_BIST_TEST_MODE  <<<<<<<<<< \r\n");
+    }
+#endif /* USB_BIST_DEVICE_TEST_DATA */
+
 }
+
+
 
 /********************DPM API to handle Fast Role Swap initiation ************************/
 #if(TRUE == INCLUDE_PD_FR_SWAP)

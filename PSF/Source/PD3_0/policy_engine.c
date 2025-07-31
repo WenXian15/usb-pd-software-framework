@@ -217,6 +217,16 @@ void PE_RunStateMachine (UINT8 u8PortNum)
             // WenXian
             PE_RunVDEMStateMachine (u8PortNum);
         #endif
+
+        #if (TRUE == USB_BIST_DEVICE_CARRIER_MODE)
+            // WenXian
+            PE_RunBistStateMachine(u8PortNum);
+        #endif
+
+        #if (TRUE == USB_BIST_DEVICE_TEST_DATA)
+            //WenXian
+            PE_RunBistStateMachine(u8PortNum);
+        #endif  
          
         if (PD_ROLE_SOURCE == DPM_GET_CURRENT_POWER_ROLE(u8PortNum))
         {
@@ -320,6 +330,10 @@ UINT8 PE_IsMsgUnsupported (UINT8 u8PortNum, UINT16 u16Header)
                     if (FALSE == DPM_GET_PDO_DUAL_DATA(gasCfgStatusData.sPerPortData[u8PortNum].u32aAdvertisedPDO[INDEX_0]))
                     {
                         u8RetVal = PE_UNSUPPORTED_MSG;
+                        DEBUG_PRINT_PORT_UINT32_STR(PSF_PE_LAYER_DEBUG_MSG,u8PortNum,"Byte0",gasCfgStatusData.sPerPortData[u8PortNum].u32aAdvertisedPDO[INDEX_0], 4,"\r\n");
+                        DEBUG_PRINT_PORT_UINT32_STR(PSF_PE_LAYER_DEBUG_MSG,u8PortNum,"Byte1",gasCfgStatusData.sPerPortData[u8PortNum].u32aAdvertisedPDO[INDEX_1], 4,"\r\n");
+                        DEBUG_PRINT_PORT_UINT32_STR(PSF_PE_LAYER_DEBUG_MSG,u8PortNum,"Byte2",gasCfgStatusData.sPerPortData[u8PortNum].u32aAdvertisedPDO[INDEX_2], 4,"\r\n");
+                        DEBUG_PRINT_PORT_UINT32_STR(PSF_PE_LAYER_DEBUG_MSG,u8PortNum,"Byte3",gasCfgStatusData.sPerPortData[u8PortNum].u32aAdvertisedPDO[INDEX_3], 4,"\r\n");
                     }
                 #endif
             }

@@ -2912,6 +2912,7 @@ void TypeC_SrcIntrHandler (UINT8 u8PortNum)
 		{
             DEBUG_PRINT_PORT_STR (PSF_PROTOCOL_TYPEC_LAYER_DEBUG_MSG,u8PortNum,"TYPEC: Only Sink is Present in CC");
             DEBUG_PRINT_PORT_STR (PSF_PROTOCOL_TYPEC_LAYER_DEBUG_MSG,((gasTypeCcontrol[u8PortNum].u8CC1MatchISR > gasTypeCcontrol[u8PortNum].u8CC2MatchISR) ? 1 : 2),"\r\n");               
+            DEBUG_PRINT_PORT_STR (PSF_PROTOCOL_TYPEC_LAYER_DEBUG_MSG,u8PortNum,"Testing");
             
             if (TYPEC_UNATTACHED_SRC == u8TypeCState)
             {                                  

@@ -90,6 +90,22 @@ const UINT8 u8aBMCEncoderRegValues [] = {
 /***************************************************************************************************/
 
 /***************************************************************************************************/
+
+void print_hex_byte(UINT8 value)
+{
+    char hex_chars[] = "0123456789ABCDEF";
+    char buffer[4];
+
+    buffer[0] = hex_chars[(value >> 4) & 0x0F];  // Upper nibble
+    buffer[1] = hex_chars[value & 0x0F];         // Lower nibble
+    buffer[2] = ' ';                             // Space separator
+    buffer[3] = '\0';                            // Null terminator
+    
+    PSF_APP_UART_Write_String(buffer);    
+    
+}
+
+
 void  PRL_Init (UINT8 u8PortNum)
 {
 	/* Protocol Tx PHY layer is Reset */
@@ -595,6 +611,7 @@ UINT8 PRL_BuildTxPacket (UINT8 u8PortNum, UINT32 u32Header, UINT8 *pu8DataBuffer
 		for (u8DataIndex = SET_TO_ZERO; u8DataIndex < u8DataObjSizeInBytes; u8DataIndex++)
 		{
 			pu8TxPkt [++u8PktIndex] = pu8DataBuffer [u8DataIndex];
+            print_hex_byte(pu8DataBuffer [u8DataIndex]);
 		}
 	}
     
@@ -681,10 +698,16 @@ void PRL_EnableRx (UINT8 u8PortNum, UINT8 u8Enable)
 UINT8 PRL_ReceiveMsg (UINT8 u8PortNum, UINT8 *pu8SOPType, UINT32 *pu32Header, UINT8 *pu8DataBuffer, PRLRxCallback pfnRxCallback)
 {
     UINT16 u16DataSize, u8Return;
+    // UINT16 array_size;
  
     u8Return = PRL_ProcessRcvdMsg(u8PortNum);
 	
-    if ((PRL_RET_NO_MSG_RCVD == u8Return) && (!gasPRL [u8PortNum].u8RxError) && (!gasPRL [u8PortNum].u8RxHRRcvdISR))
+    if ((PRL_RET_NO_MSG_RCVD == u8Return) && (!gasPRL [u8PortNum].u8RxError) && (!gasPRL [u8PortNum].u8RxHRRcvdISR)
+#if (TRUE == USB_BISTDEVICE_CARRIER_MODE)
+           // Ignore BIST CARRIER MODE Message
+           && (gasPolicyEngine[u0PortNum].ePEState == ePE_BIST_CARRIER_MODE_IDLE)
+#endif
+            )
     {
 		/* No Message is received. Return PRL_RET_NO_MSG_RCVD */
         return PRL_RET_NO_MSG_RCVD;
@@ -701,16 +724,22 @@ UINT8 PRL_ReceiveMsg (UINT8 u8PortNum, UINT8 *pu8SOPType, UINT32 *pu32Header, UI
 		/* if pu8DataBuffer is not NULL*/
         if (pu8DataBuffer != NULL)
         {
+			DEBUG_PRINT_PORT_STR (PSF_PROTOCOL_TYPEC_LAYER_DEBUG_MSG,u8PortNum,"WenXian: Buffer is not empty\r\n");
 		  	/* data from global buffer is copied to local buffer */
             for (u16DataSize = SET_TO_ZERO; 
 				 u16DataSize < (PRL_GET_OBJECT_COUNT(gasPRLRecvBuff[u8PortNum].u16Header) * PRL_SINGLE_DATAOBJ_SIZE_IN_BYTES); 
 				 u16DataSize++)
             {
                 pu8DataBuffer [u16DataSize] = gasPRLRecvBuff[u8PortNum].u8DataObj[u16DataSize];
+                print_hex_byte(pu8DataBuffer [u16DataSize]);
+                // MCHP_PSF_HOOK_PRINT_CHAR(gasPRLRecvBuff[u8PortNum].u8DataObj[u16DataSize]);
+                // PSF_APP_UART_Write_Int((UINT32)gasPRLRecvBuff[u8PortNum].u8DataObj[u16DataSize], 1);
+                // DEBUG_PRINT_PORT_STR (PSF_PROTOCOL_TYPEC_LAYER_DEBUG_MSG, u8PortNum,"\r\n");
             }
         }
         
-        DEBUG_PRINT_PORT_STR (PSF_PROTOCOL_TYPEC_LAYER_DEBUG_MSG,u8PortNum,"PRL: Rx Msg passed to PE\r\n");        
+        DEBUG_PRINT_PORT_STR (PSF_PROTOCOL_TYPEC_LAYER_DEBUG_MSG, u8PortNum,"\r\n");    
+        DEBUG_PRINT_PORT_STR (PSF_PROTOCOL_TYPEC_LAYER_DEBUG_MSG,u8PortNum,"PRL: Rx Msg passed to PE\r\n");
     }
     
     #if (TRUE == INCLUDE_PD_3_0)

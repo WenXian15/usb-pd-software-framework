@@ -253,6 +253,13 @@ typedef enum {
     #ifdef INCLUDE_PD_VDEM
     ePE_VDEM_INITIATE_VDEM,
     #endif
+    //---------------------------BIST DEVICE CARRIER MODE states---------------------------------------//
+    #ifdef USB_BIST_DEVICE_CARRIER_MODE
+    ePE_BIST_CARRIER_MODE,
+    #endif
+    #ifdef USB_BIST_DEVICE_TEST_DATA
+    ePE_BIST_TEST_DATA,
+    #endif
     //-------------------------Common States------------------------------//
     ePE_GET_SINK_CAP,
     ePE_SOFT_RESET,
@@ -464,6 +471,18 @@ typedef enum {
     ePE_VDEM_INITIATE_VDEM_ENTRY_SS,
     ePE_VDEM_INITIATE_VDEM_MSG_DONE_SS,
     ePE_VDEM_INITIATE_VDEM_IDLE_SS,
+    #endif
+    #ifdef USB_BIST_DEVICE_CARRIER_MODE
+    ePE_BIST_CARRIER_MODE_ENTRY_SS,
+    ePE_BIST_CARRIER_MODE_GOODCRC_RCVD_SS,
+    ePE_BIST_CARRIER_MODE_IDLE_SS,
+    #endif
+    #ifdef USB_BIST_DEVICE_TEST_DATA
+    ePE_BIST_TEST_DATA_ENTRY_SS,
+    ePE_BIST_TEST_DATA_GOODCRC_RCVD_SS,
+    ePE_BIST_TEST_DATA_RESEND_SS,
+    ePE_BIST_TEST_DATA_SEND_HARD_RESET_SS,
+    ePE_BIST_TEST_DATA_IDLE_SS,
     #endif
     //--------------------Common States-------------------------------------------------//
     /* ePE_GET_SINK_CAP */
@@ -1326,7 +1345,10 @@ void PE_RunVDMStateMachine (UINT8 u8PortNum, UINT8 *pu8DataBuf, UINT32 u32Header
 void PE_HandleUnsupportedVDM (UINT8 u8PortNum);
 
 // WenXian
+
 void PE_RunVDEMStateMachine (UINT8 u8PortNum); 
+
+void PE_RunBistStateMachine (UINT8 u8PortNum);
 
 
 #endif /*_POLICY_ENGINE_H_*/

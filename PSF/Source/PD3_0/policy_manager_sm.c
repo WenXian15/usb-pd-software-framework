@@ -841,7 +841,8 @@ void DPM_ClientRequestHandler(UINT8 u8PortNum)
 #if (TRUE == INCLUDE_PD_DR_SWAP)
     /* Check for DPM_CLIENT_REQ_DR_SWAP request */
     else if (u32ClientRequest & DPM_CLIENT_REQ_DR_SWAP)
-    {            
+    {   
+        DEBUG_PRINT_PORT_STR (PSF_DPM_LAYER_DEBUG_MSG,u8PortNum,"WenXian - Entering DPM_Client Req DR w ");
         /* Clear the request since the request is accepted and going to be handled */
         u32ClientRequest &= ~(DPM_CLIENT_REQ_DR_SWAP); 
         
@@ -859,18 +860,6 @@ void DPM_ClientRequestHandler(UINT8 u8PortNum)
         DPM_RegisterInternalEvent (u8PortNum, DPM_INT_EVT_INITIATE_VDM);                                    
     }  /* DPM_CLIENT_REQ_INITIATE_VDM */
 #endif
-#if (TRUE == INCLUDE_PD_VDEM)
-    // WenXian
-//    else if (u32ClientRequest & DPM_CLIENT_REQ_INITIATE_VDEM)
-//    {
-//        DEBUG_PRINT_PORT_STR (PSF_PE_LAYER_DEBUG_MSG,u8PortNum," >>>>>>>>>> WenXian : Registering DPM_INT_EVT_INITIATE_VDEM  <<<<<<<<<< \r\n");
-        
-//        /* Clear the request since the request is accepted and going to be handled */
-//        u32ClientRequest &= ~(DPM_CLIENT_REQ_INITIATE_VDEM);
-        
-//        DPM_RegisterInternalEvent (u8PortNum, DPM_INT_EVT_INITIATE_VDEM);
-//    }
-#endif /* INCLUDE_PD_VDEM */
 #if(TRUE == INCLUDE_UPD_HPD)
     else if (u32ClientRequest & DPM_CLIENT_REQ_DISABLE_HPD)
     {
@@ -1198,13 +1187,16 @@ void DPM_InternalEventHandler (UINT8 u8PortNum)
                     u32PartnerPDO = gasCfgStatusData.sPerPortData[u8PortNum].u32aPartnerSourcePDO[INDEX_0];
                 }
                 
+                // When Dual_Data is set then it automatically initiate Data Role Swap?
                 if (DPM_GET_PDO_DUAL_DATA(u32PartnerPDO))
                 {
+                    /*
                     gasPolicyEngine[u8PortNum].ePEState = ePE_DRS_SEND_SWAP;
                     gasPolicyEngine[u8PortNum].ePESubState = ePE_DRS_SEND_SWAP_ENTRY_SS;
                     
                     u16AMSInProgress = DPM_INT_EVT_INITIATE_DR_SWAP;  
                     DEBUG_PRINT_PORT_STR (PSF_DPM_LAYER_DEBUG_MSG,u8PortNum,"DPM: DR_SWAP INITIATED\r\n");
+                     */
                 }
             }
         }
@@ -1235,6 +1227,36 @@ void DPM_InternalEventHandler (UINT8 u8PortNum)
             u16AMSInProgress = DPM_INT_EVT_INITIATE_VDEM;
         }
 #endif /* INCLUDE_PD_VDEM */
+        
+#if (TRUE == USB_BIST_DEVICE_CARRIER_MODE)
+        else if (gasDPM[u8PortNum].u16DPMInternalEvents & DPM_INT_EVT_INITIATE_BIST_CARRIER_MODE)
+        {
+            gasPolicyEngine[u8PortNum].ePEState = ePE_BIST_CARRIER_MODE;
+            gasPolicyEngine[u8PortNum].ePESubState = ePE_BIST_CARRIER_MODE_ENTRY_SS;
+            
+            /* Clear the Internal event */
+            gasDPM[u8PortNum].u16DPMInternalEvents &= ~(DPM_INT_EVT_INITIATE_BIST_CARRIER_MODE);
+        
+            DEBUG_PRINT_PORT_STR (PSF_DPM_LAYER_DEBUG_MSG,u8PortNum,"DPM: BIST CARRIER MODE INITIATED!!!!!!!!!!!!!!\r\n");
+            
+            u16AMSInProgress = DPM_INT_EVT_INITIATE_BIST_CARRIER_MODE;
+        }
+#endif
+        
+#if (TRUE == USB_BIST_DEVICE_TEST_DATA)
+        else if (gasDPM[u8PortNum].u16DPMInternalEvents & DPM_INT_EVT_INITIATE_BIST_TEST_DATA)
+        {
+            gasPolicyEngine[u8PortNum].ePEState = ePE_BIST_TEST_DATA; 
+            gasPolicyEngine[u8PortNum].ePESubState = ePE_BIST_TEST_DATA_ENTRY_SS;
+        
+            /* Clear the Internal event */
+            gasDPM[u8PortNum].u16DPMInternalEvents &= ~(DPM_INT_EVT_INITIATE_BIST_TEST_DATA);
+        
+            DEBUG_PRINT_PORT_STR (PSF_DPM_LAYER_DEBUG_MSG,u8PortNum,"DPM: BIST TEST DATA INITIATED!!!!!!!!!!!!!!\r\n");
+            
+            u16AMSInProgress = DPM_INT_EVT_INITIATE_BIST_TEST_DATA;
+        }
+#endif
         
 #if (TRUE == INCLUDE_PD_SOURCE_PPS)
         else if (gasDPM[u8PortNum].u16DPMInternalEvents & DPM_INT_EVT_INITIATE_ALERT)

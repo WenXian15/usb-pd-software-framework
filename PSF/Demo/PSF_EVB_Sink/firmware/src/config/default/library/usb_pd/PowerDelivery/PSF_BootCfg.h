@@ -90,7 +90,11 @@ Power Data State for FRS (Bit 12:11) 0 - FRS Disabled for Port, 1 - FRS only in 
 /******************************Sink PDO Configuration***************************/
 #define CFG_PORT_0_SINK_NUM_OF_PDOS       4U
 
+#if(USB_DR_SWAP_HOST == TRUE)
+#define CFG_PORT_0_SINK_PDO_1             0x1a01912cU
+#else
 #define CFG_PORT_0_SINK_PDO_1             0x1801912cU
+#endif
 #define CFG_PORT_0_SINK_PDO_2             0x2d12cU
 #define CFG_PORT_0_SINK_PDO_3             0x4b12cU
 #define CFG_PORT_0_SINK_PDO_4             0x6412cU
@@ -153,7 +157,11 @@ Power Data State for FRS (Bit 12:11) 0 - FRS Disabled for Port, 1 - FRS only in 
 #define CFG_PORT_0_SINK_CAPS_EXTD_MAX_PDP_In_WATT              60U 
 
 /**************************Role Swap Policy defines*****************************/
-#define CFG_PORT_0_ROLE_SWAP_POLICY       0xc00U  
+#if(USB_DR_SWAP_HOST == TRUE)
+#define CFG_PORT_0_ROLE_SWAP_POLICY       0xc0aU
+#else
+#define CFG_PORT_0_ROLE_SWAP_POLICY       0xc00U
+#endif
 
 /*********************** Feature Select Defines *************************************/
 /* Note: The CFG_PORT_0_FEATURE_SELECT is a bit mapped entry consisting of the following
