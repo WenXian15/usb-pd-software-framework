@@ -43,7 +43,7 @@ HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
 
 #include <generic_defs.h>
 
-#define USB_DR_SWAP_DEVICE    0
+#define USB_DR_SWAP_DEVICE    1
 #define INCLUDE_PD_VDEM       0
 #define USB_BIST_DEVICE_CARRIER_MODE    0
 #define USB_BIST_DEVICE_TEST_DATA    0

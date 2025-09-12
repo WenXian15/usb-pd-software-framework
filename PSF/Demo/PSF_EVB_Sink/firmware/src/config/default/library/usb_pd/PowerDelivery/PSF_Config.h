@@ -17,7 +17,7 @@
 //DOM-IGNORE-BEGIN
 /*******************************************************************************
 
-Copyright ©  [2022] Microchip Technology Inc. and its subsidiaries.
+Copyright ï¿½  [2022] Microchip Technology Inc. and its subsidiaries.
 
 Subject to your compliance with these terms, you may use Microchip software and
 any derivatives exclusively with Microchip products. It is your responsibility
@@ -45,9 +45,9 @@ HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
 
 
 #define USBPC_HOST_8               0
-#define USB_DR_SWAP_HOST           1
+#define USB_DR_SWAP_HOST           0
 #define USB_BIST_DEVICE_CARRIER_MODE    0
-#define USB_BIST_DEVICE_TEST_DATA    0
+#define USB_BIST_DEVICE_TEST_DATA    1
 
 
 //DOM-IGNORE-END

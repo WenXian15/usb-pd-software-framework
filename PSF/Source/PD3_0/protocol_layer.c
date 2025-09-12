@@ -91,6 +91,7 @@ const UINT8 u8aBMCEncoderRegValues [] = {
 
 /***************************************************************************************************/
 
+#if (TRUE == CONFIG_HOOK_DEBUG_MSG)
 void print_hex_byte(UINT8 value)
 {
     char hex_chars[] = "0123456789ABCDEF";
@@ -104,7 +105,7 @@ void print_hex_byte(UINT8 value)
     PSF_APP_UART_Write_String(buffer);    
     
 }
-
+#endif
 
 void  PRL_Init (UINT8 u8PortNum)
 {
@@ -611,7 +612,9 @@ UINT8 PRL_BuildTxPacket (UINT8 u8PortNum, UINT32 u32Header, UINT8 *pu8DataBuffer
 		for (u8DataIndex = SET_TO_ZERO; u8DataIndex < u8DataObjSizeInBytes; u8DataIndex++)
 		{
 			pu8TxPkt [++u8PktIndex] = pu8DataBuffer [u8DataIndex];
+#if (TRUE == CONFIG_HOOK_DEBUG_MSG)
             print_hex_byte(pu8DataBuffer [u8DataIndex]);
+#endif
 		}
 	}
     
@@ -731,7 +734,9 @@ UINT8 PRL_ReceiveMsg (UINT8 u8PortNum, UINT8 *pu8SOPType, UINT32 *pu32Header, UI
 				 u16DataSize++)
             {
                 pu8DataBuffer [u16DataSize] = gasPRLRecvBuff[u8PortNum].u8DataObj[u16DataSize];
+#if (TRUE == CONFIG_HOOK_DEBUG_MSG)
                 print_hex_byte(pu8DataBuffer [u16DataSize]);
+#endif
                 // MCHP_PSF_HOOK_PRINT_CHAR(gasPRLRecvBuff[u8PortNum].u8DataObj[u16DataSize]);
                 // PSF_APP_UART_Write_Int((UINT32)gasPRLRecvBuff[u8PortNum].u8DataObj[u16DataSize], 1);
                 // DEBUG_PRINT_PORT_STR (PSF_PROTOCOL_TYPEC_LAYER_DEBUG_MSG, u8PortNum,"\r\n");

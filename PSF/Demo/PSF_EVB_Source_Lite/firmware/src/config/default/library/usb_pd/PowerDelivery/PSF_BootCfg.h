@@ -11,7 +11,7 @@
     This header file contains user configurable globals and function prototypes.
 ************************************************************************** */
 /*******************************************************************************
-Copyright ©  [2022] Microchip Technology Inc. and its subsidiaries.
+Copyright ï¿½  [2022] Microchip Technology Inc. and its subsidiaries.
 
 Subject to your compliance with these terms, you may use Microchip software and
 any derivatives exclusively with Microchip products. It is your responsibility
@@ -63,7 +63,8 @@ Rp Value (Bit 4:3) 0 -Rd(Sink), 1-Default USB Rp, 2- 1.5A Rp, 3-3.0A Rp
 Port Enable (Bit 5) 0- Port Disable; 1- Port Enable
 VCONN OCS Enable (Bit 9) 0- Disable, 1-Enable 
 Power Data State for FRS (Bit 12:11) 0 - FRS Disabled for Port, 1 - FRS only in Sink/Data Host, 2 - FRS only in Source/Data Device */
-#define CFG_PORT_0_CFG_DATA                  0x239U
+// #define CFG_PORT_0_CFG_DATA                  0x239U
+#define CFG_PORT_0_CFG_DATA                  0x23dU
 
 /********************************PIO Specific configuration******************************/
 #define CFG_PORT_0_UPD_FAULT_IN_PIO_NO       eUPD_PIO5
@@ -90,13 +91,15 @@ Power Data State for FRS (Bit 12:11) 0 - FRS Disabled for Port, 1 - FRS only in 
 /******************************Source PDO Configuration***************************/
 #define CFG_PORT_0_SOURCE_NUM_OF_PDOS     4U
 
-#define CFG_PORT_0_SOURCE_PDO_1           0x801912cU
+// #define CFG_PORT_0_SOURCE_PDO_1           0x801912cU
+#define CFG_PORT_0_SOURCE_PDO_1           0xa01912cU
 #define CFG_PORT_0_SOURCE_PDO_2           0x2d12cU
 #define CFG_PORT_0_SOURCE_PDO_3           0x4b12cU
 #define CFG_PORT_0_SOURCE_PDO_4           0x6412cU
 
 /**************************Role Swap Policy defines*****************************/
-#define CFG_PORT_0_ROLE_SWAP_POLICY       0xc00U  
+// #define CFG_PORT_0_ROLE_SWAP_POLICY       0xc00U 
+#define CFG_PORT_0_ROLE_SWAP_POLICY       0xc05U
 
 /*********************** Feature Select Defines *************************************/
 /* Note: The CFG_PORT_0_FEATURE_SELECT is a bit mapped entry consisting of the following
@@ -146,13 +149,13 @@ Power Data State for FRS (Bit 12:11) 0 - FRS Disabled for Port, 1 - FRS only in 
 /******************************Source PDO Configuration***************************/
 #define CFG_PORT_1_SOURCE_NUM_OF_PDOS     4U
 
-#define CFG_PORT_1_SOURCE_PDO_1           0x801912cU
+#define CFG_PORT_1_SOURCE_PDO_1           0xa01912cU
 #define CFG_PORT_1_SOURCE_PDO_2           0x2d12cU
 #define CFG_PORT_1_SOURCE_PDO_3           0x4b12cU
 #define CFG_PORT_1_SOURCE_PDO_4           0x6412cU
 
 /**************************Role Swap Policy defines*****************************/
-#define CFG_PORT_1_ROLE_SWAP_POLICY       0xc00U  
+#define CFG_PORT_1_ROLE_SWAP_POLICY       0xc05U  
 
 /*********************** Feature Select Defines *************************************/
 /* Note: The CFG_PORT_1_FEATURE_SELECT is a bit mapped entry consisting of the following

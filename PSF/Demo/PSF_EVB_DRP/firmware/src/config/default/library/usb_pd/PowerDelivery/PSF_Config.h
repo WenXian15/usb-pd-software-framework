@@ -17,7 +17,7 @@
 //DOM-IGNORE-BEGIN
 /*******************************************************************************
 
-Copyright ©  [2022] Microchip Technology Inc. and its subsidiaries.
+Copyright ï¿½  [2022] Microchip Technology Inc. and its subsidiaries.
 
 Subject to your compliance with these terms, you may use Microchip software and
 any derivatives exclusively with Microchip products. It is your responsibility
@@ -42,6 +42,18 @@ HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
 #define _PSF_CONFIG_H_
 
 #include <generic_defs.h>
+
+// Source Lite
+#define USBPC_HOST_8               0
+#define USB_DR_SWAP_HOST           0
+#define USB_BIST_DEVICE_CARRIER_MODE    0
+#define USB_BIST_DEVICE_TEST_DATA    0
+
+// Sink
+#define USB_DR_SWAP_DEVICE    0
+#define INCLUDE_PD_VDEM       0
+// #define USB_BIST_DEVICE_CARRIER_MODE    0
+// #define USB_BIST_DEVICE_TEST_DATA    0
 
 //DOM-IGNORE-END
 
@@ -480,7 +492,7 @@ Note:
     Along with setting CONFIG_HOOK_DEBUG_MSG to 1, setting Debug Message Layer macros
     to 1 is required to print status messages for the corresponding layer.
 **************************************************************************/
-#define CONFIG_HOOK_DEBUG_MSG      0    
+#define CONFIG_HOOK_DEBUG_MSG      1    
 
 /**************************************************************************
 Summary:
@@ -502,7 +514,7 @@ Example:
 Note:
     None.
 **************************************************************************/
-#define PSF_DPM_LAYER_DEBUG_MSG      0 
+#define PSF_DPM_LAYER_DEBUG_MSG      1 
 
 /**************************************************************************
 Summary:
