@@ -1545,14 +1545,16 @@ void DPM_InitiateInternalEvts (UINT8 u8PortNum)
         }
 #endif
 #if(TRUE == USB_BIST_DEVICE_CARRIER_MODE)
-    if (gasCfgStatusData.sPerPortData[u8PortNum].u32aPartnerSinkPDO[INDEX_0])
+    if ((PD_ROLE_SINK == u8CurrentPwrRole && !gasCfgStatusData.sPerPortData[u8PortNum].u32aPartnerSinkPDO[INDEX_0]) ||\
+            (PD_ROLE_SOURCE == u8CurrentPwrRole && !gasCfgStatusData.sPerPortData[u8PortNum].u32aPartnerSourcePDO[INDEX_0]))
     {
         DPM_RegisterInternalEvent (u8PortNum, DPM_INT_EVT_INITIATE_BIST_CARRIER_MODE);
         DEBUG_PRINT_PORT_STR (PSF_PE_LAYER_DEBUG_MSG,u8PortNum," >>>>>>>>>> WenXian : Register DPM_INT_EVT_INITIATE_BIST_CARRIER_MODE  <<<<<<<<<< \r\n");
     }
 #endif /* USB_BIST_DEVICE_CARRIER_MODE */    
 #if(TRUE == USB_BIST_DEVICE_TEST_DATA) 
-    if (gasCfgStatusData.sPerPortData[u8PortNum].u32aPartnerSinkPDO[INDEX_0])
+    if ((PD_ROLE_SINK == u8CurrentPwrRole && !gasCfgStatusData.sPerPortData[u8PortNum].u32aPartnerSinkPDO[INDEX_0]) ||\
+            (PD_ROLE_SOURCE == u8CurrentPwrRole && !gasCfgStatusData.sPerPortData[u8PortNum].u32aPartnerSourcePDO[INDEX_0]))
     {
         DPM_RegisterInternalEvent (u8PortNum, DPM_INT_EVT_INITIATE_BIST_TEST_DATA);
         DEBUG_PRINT_PORT_STR (PSF_PE_LAYER_DEBUG_MSG,u8PortNum," >>>>>>>>>> WenXian : Register DPM_INT_EVT_INITIATE_BIST_TEST_MODE  <<<<<<<<<< \r\n");
